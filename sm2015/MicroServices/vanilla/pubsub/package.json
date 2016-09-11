@@ -1,0 +1,16 @@
+{
+  "name": "musub",
+  "version": "1.0.0",
+  "description": "",
+  "main": "pubsub.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "David Mark Clements",
+  "license": "MIT",
+  "dependencies": {
+    "JSONStream": "^0.10.0",
+    "event-stream": "^3.2.1",
+    "pubsub-js": "^1.5.0"
+  }
+}

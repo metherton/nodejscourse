@@ -1,0 +1,182 @@
+speed/cpu
+  suited to problems that involve asynchronous operations
+  at scale you *must* break into multiple services anyway, so in isolation 
+  a monolith will perform better, but once you try to scale you hit obstacles
+
+
+discovery
+  don't orchestrate, no "god class", 
+  publish needs
+  publish answers
+  subscribe to information that's interesting
+  every one talk to a message bus / pub sub
+
+culture
+  microservices alter culture
+    must faster development cycles
+    less arguments about the "right" technology
+
+teams
+  microservices allow teams to reorganize around
+  business areas, instead of technology stacks
+
+
+technical debt
+  microservices reduce the risk of technical debt
+    small services that encapsulate data have an isolated impact on the universe at large
+
+
+data encapsulation
+  services are like classes in a pure sense
+    they encapsulate a set of data
+    they couple that data with some logic
+
+componentization
+  microservices are 
+
+databases
+  each service has it's own database for it's realm of responsibility
+  this allows a service to choose it's own db format (noSql, relational
+  graph, whatever fits best)
+  preserves the loose coupling
+  it ensures encapsulation and makes it difficult to work around the
+  component boundaries
+
+data entities
+  there are no defined data entities, 
+    no "user entity", no "account entity"
+    there are no table joins.
+    there is only information nuggets that can be collected and 
+    assembled into meaningful groups (e.g postcode/email example)
+
+messages
+  published information should be conclusion only
+
+history
+  all data should be treated as immutable
+  never overwrite old data, keep a record of all previous data
+  memory is cheap
+  analyse data later (using a data mining microservice, possibly written in R etc.)
+  draw new conclusions from old and current data
+
+
+versions
+  publish new versions of microservices, but leave the old ones running
+
+
+self-monitoring
+  allow microservices to monitor each other
+  microservices should fail quickly and complain noisely
+  let self-monitoring alerts replace replace unit tests
+  because the system is so granular, a failure in a single
+  point of the system that lasts a few hours is worth the 
+  cost of discovering a real production problem from 
+  real production scenarios and data - something unit tests 
+  will rarely be able to emulate
+
+
+architecture
+  architecture is organic, knowledge of data flow etc
+  lives within the team (writing down would be fruitless
+  since the software is living, changing constantly)
+  
+
+front end clients
+  talk to a web server microservice 
+  think of it as a microservice rather than an API bridge,
+  this maintains the concept of distribution, and gives
+  us permission to run multiple web server versions
+  web server asks for information 
+
+CAP 
+  microservices sacrifice consistency in favour of availability
+  leads to an eventually consistent approach
+  this is just fine for many things
+
+microservices shift application complexity into deployment complexity
+
+
+Async vs Sync
+  microservices should be explitly asynchronous
+  rpc: making an synchronous op look like an asynchronous call
+  is a flawed approach - the paradigms don't carry over
+  a the making of local call can be relied on to succeeed,
+  a network call cannot be relied on
+  cross-microservice dependent synchronous request / response approaches
+  are terrible for final response delivery
+
+SOA
+  Microservices are a subset of SOA
+  The emphasis on microservices is on dump pipes, the is
+  no service cloud responsible for discovery an data routing
+  Microservices is decenatralized SOA
+
+
+Micro
+  Micro relates to a suggestion regarding the size of a service
+  The point of microservices is to break everything into small 
+  manageable pieces
+  The smaller the definition each service, the more pieces a problem is broken up into
+
+ 
+
+
+Microservices vs Monoliths
+
+
+
+failure
+  microservices should be expected to fail
+  monitoring and failure response is a primary paradigm
+  creating a culture of failing fast, and quick recovery is important
+    eg netflix chaos monkey
+
+testing
+  self monitoring should replace unit and integration testing
+  unit test infrastructure (e.g. the modules that a microservice uses)
+  a microservice is part of a larger universe, dependencies
+  between services is relative to data flow, which is constantly
+  changing. Even if you solve the problem of isolating
+  a microservice and mocking the data flow, in a typical microservice
+  eco system, the test could be out of date by the end of the day
+  if a service is working, that's fine, if the service crashes,
+  the team should be alerted, they fix the service.
+  the production environment is the test
+  battle testing is the best testing
+  business monitoring should replace acceptance testing
+  acceptance testing a large monolith is very complicated,
+  once acceptance tests have been written and are passing 
+  for a monolith, no one wants to make any changes to the code anymore
+  acceptance testing a microservices deployment is also
+  very complicated, and since microservices are living software that
+  responds to changing business requirements, it becomes a huge burden to maintain
+  allow KPI's to replace acceptance testing
+    e.g. how many clicks, how many sales, how much money
+    this is the ultimate form of black box testing
+
+
+fault isolation
+  microservice provide extreme fault tolerance
+  if one microservice out of 100 roughly equivalent crashes, 
+  ~1% of the system is failing (e.g. perhaps a user isn't
+  seeing a comments section)
+  new business rules can be written as new microservices
+  and rolled out, if/when those new microservices fail, the
+  developers simply fix them
+
+
+life cycles
+  microservices can take deployment cycles down
+  from months to hours, they certainly should reduce
+  time to production to some degree
+
+
+
+
+
+
+
+
+
+
+

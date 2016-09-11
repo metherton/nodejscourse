@@ -1,0 +1,404 @@
+{
+  "name": "sudc-system",
+  "namespace": "sudc",
+  "id": "62999e58-66a0-4e50-a870-f2673acf6c79",
+  "containerDefinitions": [
+    {
+      "type": "aws-elb",
+      "specific": {
+        "Listeners": [
+          {
+            "Protocol": "HTTP",
+            "LoadBalancerPort": 80,
+            "InstanceProtocol": "HTTP",
+            "InstancePort": 8000
+          }
+        ]
+      },
+      "id": "awsWebElb",
+      "name": "awsWebElb"
+    },
+    {
+      "type": "aws-sg",
+      "specific": {
+        "GroupName": "webSg",
+        "Description": "Web security group",
+        "IpPermissions": [
+          {
+            "IpProtocol": "tcp",
+            "FromPort": 3000,
+            "ToPort": 3000,
+            "IpRanges": [
+              {
+                "CidrIp": "0.0.0.0/0"
+              }
+            ]
+          },
+          {
+            "IpProtocol": "tcp",
+            "FromPort": 22,
+            "ToPort": 22,
+            "IpRanges": [
+              {
+                "CidrIp": "0.0.0.0/0"
+              }
+            ]
+          },
+          {
+            "IpProtocol": "tcp",
+            "FromPort": 9002,
+            "ToPort": 9002,
+            "IpRanges": [
+              {
+                "CidrIp": "0.0.0.0/0"
+              }
+            ]
+          },
+          {
+            "IpProtocol": "tcp",
+            "FromPort": 873,
+            "ToPort": 873,
+            "IpRanges": [
+              {
+                "CidrIp": "10.0.0.0/8"
+              }
+            ]
+          },
+          {
+            "IpProtocol": "tcp",
+            "FromPort": 9001,
+            "ToPort": 9001,
+            "IpRanges": [
+              {
+                "CidrIp": "0.0.0.0/0"
+              }
+            ]
+          },
+          {
+            "IpProtocol": "tcp",
+            "FromPort": 9000,
+            "ToPort": 9000,
+            "IpRanges": [
+              {
+                "CidrIp": "0.0.0.0/0"
+              }
+            ]
+          },
+          {
+            "IpProtocol": "tcp",
+            "FromPort": 8000,
+            "ToPort": 8000,
+            "IpRanges": [
+              {
+                "CidrIp": "0.0.0.0/0"
+              }
+            ]
+          }
+        ],
+        "IpPermissionsEgress": [
+          {
+            "IpProtocol": "-1",
+            "UserIdGroupPairs": [],
+            "IpRanges": [
+              {
+                "CidrIp": "0.0.0.0/0"
+              }
+            ]
+          }
+        ]
+      },
+      "id": "awsWebSg",
+      "name": "awsWebSg"
+    },
+    {
+      "type": "aws-autoscaling",
+      "specific": {
+        "ImageId": "ami-4b90b27b",
+        "MinSize": 2,
+        "MaxSize": 5
+      },
+      "id": "awsAutoscaling",
+      "name": "awsAutoscaling"
+    },
+    {
+      "type": "blank-container",
+      "id": "awsAMachine",
+      "name": "awsAMachine"
+    },
+    {
+      "type": "docker",
+      "specific": {
+        "repositoryUrl": "https://github.com/nearform/sudc-doc.git",
+        "processBuild": "npm install",
+        "execute": {
+          "args": "-p 9002:9002 -d",
+          "process": "srv/doc-srv.js"
+        },
+        "commit": "77c4014bef47deb4fef3af579f2959457c058ce8"
+      },
+      "id": "doc$77c4014bef47deb4fef3af579f2959457c058ce8",
+      "name": "doc"
+    },
+    {
+      "type": "docker",
+      "specific": {
+        "repositoryUrl": "https://github.com/nearform/sudc-history.git",
+        "processBuild": "npm install",
+        "execute": {
+          "args": "-p 9003:9003 -d",
+          "process": "srv/hist-srv.js"
+        },
+        "commit": "39f0c71b89f3ba78064468c0af79017927f1a6cb"
+      },
+      "id": "hist$39f0c71b89f3ba78064468c0af79017927f1a6cb",
+      "name": "hist"
+    },
+    {
+      "type": "docker",
+      "specific": {
+        "repositoryUrl": "https://github.com/nearform/sudc-realtime.git",
+        "processBuild": "npm install",
+        "execute": {
+          "args": "-p 9001:9001 -d",
+          "process": "srv/real-srv.js"
+        },
+        "commit": "5309ad7aeba319fd44adb18bbc983f4587f16af9"
+      },
+      "id": "real$5309ad7aeba319fd44adb18bbc983f4587f16af9",
+      "name": "real"
+    },
+    {
+      "type": "docker",
+      "specific": {
+        "repositoryUrl": "https://github.com/nearform/sudc-web.git",
+        "processBuild": "npm install; cd web; npm install; npm install bower; node_modules/.bin/bower install",
+        "ignored": [
+          ".build"
+        ],
+        "execute": {
+          "args": "-p 8000:8000 -d",
+          "process": "./index.js",
+          "cwd": "web"
+        },
+        "commit": "e2021682ad1d25287321a4883535252ba684d9ba"
+      },
+      "id": "web$e2021682ad1d25287321a4883535252ba684d9ba",
+      "name": "web"
+    }
+  ],
+  "topology": {
+    "containers": {
+      "awsWebElb-3ab215e9": {
+        "id": "awsWebElb-3ab215e9",
+        "containedBy": "awsWebElb-3ab215e9",
+        "containerDefinitionId": "awsWebElb",
+        "type": "aws-elb",
+        "contains": [
+          "awsWebSg-33b7ef74"
+        ],
+        "specific": {
+          "Listeners": [
+            {
+              "Protocol": "HTTP",
+              "LoadBalancerPort": 80,
+              "InstanceProtocol": "HTTP",
+              "InstancePort": 8000
+            }
+          ]
+        }
+      },
+      "awsWebSg-33b7ef74": {
+        "id": "awsWebSg-33b7ef74",
+        "containedBy": "awsWebElb-3ab215e9",
+        "containerDefinitionId": "awsWebSg",
+        "type": "aws-sg",
+        "contains": [
+          "awsAutoscaling-b34fa4a6"
+        ],
+        "specific": {
+          "GroupName": "webSg",
+          "Description": "Web security group",
+          "IpPermissions": [
+            {
+              "IpProtocol": "tcp",
+              "FromPort": 3000,
+              "ToPort": 3000,
+              "IpRanges": [
+                {
+                  "CidrIp": "0.0.0.0/0"
+                }
+              ]
+            },
+            {
+              "IpProtocol": "tcp",
+              "FromPort": 22,
+              "ToPort": 22,
+              "IpRanges": [
+                {
+                  "CidrIp": "0.0.0.0/0"
+                }
+              ]
+            },
+            {
+              "IpProtocol": "tcp",
+              "FromPort": 9002,
+              "ToPort": 9002,
+              "IpRanges": [
+                {
+                  "CidrIp": "0.0.0.0/0"
+                }
+              ]
+            },
+            {
+              "IpProtocol": "tcp",
+              "FromPort": 873,
+              "ToPort": 873,
+              "IpRanges": [
+                {
+                  "CidrIp": "10.0.0.0/8"
+                }
+              ]
+            },
+            {
+              "IpProtocol": "tcp",
+              "FromPort": 9001,
+              "ToPort": 9001,
+              "IpRanges": [
+                {
+                  "CidrIp": "0.0.0.0/0"
+                }
+              ]
+            },
+            {
+              "IpProtocol": "tcp",
+              "FromPort": 9000,
+              "ToPort": 9000,
+              "IpRanges": [
+                {
+                  "CidrIp": "0.0.0.0/0"
+                }
+              ]
+            },
+            {
+              "IpProtocol": "tcp",
+              "FromPort": 8000,
+              "ToPort": 8000,
+              "IpRanges": [
+                {
+                  "CidrIp": "0.0.0.0/0"
+                }
+              ]
+            }
+          ],
+          "IpPermissionsEgress": [
+            {
+              "IpProtocol": "-1",
+              "UserIdGroupPairs": [],
+              "IpRanges": [
+                {
+                  "CidrIp": "0.0.0.0/0"
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "awsAutoscaling-b34fa4a6": {
+        "id": "awsAutoscaling-b34fa4a6",
+        "containedBy": "awsWebSg-33b7ef74",
+        "containerDefinitionId": "awsAutoscaling",
+        "type": "aws-autoscaling",
+        "contains": [
+          "awsAMachine-40dbfb4d"
+        ],
+        "specific": {
+          "ImageId": "ami-4b90b27b",
+          "MinSize": 2,
+          "MaxSize": 5
+        }
+      },
+      "awsAMachine-40dbfb4d": {
+        "id": "awsAMachine-40dbfb4d",
+        "containedBy": "awsAutoscaling-b34fa4a6",
+        "containerDefinitionId": "awsAMachine",
+        "type": "blank-container",
+        "contains": [
+          "doc-468e236c$77c4014bef47deb4fef3af579f2959457c058ce8",
+          "hist-df8772d6$39f0c71b89f3ba78064468c0af79017927f1a6cb",
+          "real-a8804240$5309ad7aeba319fd44adb18bbc983f4587f16af9",
+          "web-318913fa$e2021682ad1d25287321a4883535252ba684d9ba"
+        ],
+        "specific": {}
+      },
+      "doc-468e236c$77c4014bef47deb4fef3af579f2959457c058ce8": {
+        "id": "doc-468e236c$77c4014bef47deb4fef3af579f2959457c058ce8",
+        "containedBy": "awsAMachine-40dbfb4d",
+        "containerDefinitionId": "doc$77c4014bef47deb4fef3af579f2959457c058ce8",
+        "type": "docker",
+        "contains": [],
+        "specific": {
+          "repositoryUrl": "https://github.com/nearform/sudc-doc.git",
+          "processBuild": "npm install",
+          "execute": {
+            "args": "-p 9002:9002 -d",
+            "process": "srv/doc-srv.js"
+          },
+          "commit": "77c4014bef47deb4fef3af579f2959457c058ce8"
+        }
+      },
+      "hist-df8772d6$39f0c71b89f3ba78064468c0af79017927f1a6cb": {
+        "id": "hist-df8772d6$39f0c71b89f3ba78064468c0af79017927f1a6cb",
+        "containedBy": "awsAMachine-40dbfb4d",
+        "containerDefinitionId": "hist$39f0c71b89f3ba78064468c0af79017927f1a6cb",
+        "type": "docker",
+        "contains": [],
+        "specific": {
+          "repositoryUrl": "https://github.com/nearform/sudc-history.git",
+          "processBuild": "npm install",
+          "execute": {
+            "args": "-p 9003:9003 -d",
+            "process": "srv/hist-srv.js"
+          },
+          "commit": "39f0c71b89f3ba78064468c0af79017927f1a6cb"
+        }
+      },
+      "real-a8804240$5309ad7aeba319fd44adb18bbc983f4587f16af9": {
+        "id": "real-a8804240$5309ad7aeba319fd44adb18bbc983f4587f16af9",
+        "containedBy": "awsAMachine-40dbfb4d",
+        "containerDefinitionId": "real$5309ad7aeba319fd44adb18bbc983f4587f16af9",
+        "type": "docker",
+        "contains": [],
+        "specific": {
+          "repositoryUrl": "https://github.com/nearform/sudc-realtime.git",
+          "processBuild": "npm install",
+          "execute": {
+            "args": "-p 9001:9001 -d",
+            "process": "srv/real-srv.js"
+          },
+          "commit": "5309ad7aeba319fd44adb18bbc983f4587f16af9"
+        }
+      },
+      "web-318913fa$e2021682ad1d25287321a4883535252ba684d9ba": {
+        "id": "web-318913fa$e2021682ad1d25287321a4883535252ba684d9ba",
+        "containedBy": "awsAMachine-40dbfb4d",
+        "containerDefinitionId": "web$e2021682ad1d25287321a4883535252ba684d9ba",
+        "type": "docker",
+        "contains": [],
+        "specific": {
+          "repositoryUrl": "https://github.com/nearform/sudc-web.git",
+          "processBuild": "npm install; cd web; npm install; npm install bower; node_modules/.bin/bower install",
+          "ignored": [
+            ".build"
+          ],
+          "execute": {
+            "args": "-p 8000:8000 -d",
+            "process": "./index.js",
+            "cwd": "web"
+          },
+          "commit": "e2021682ad1d25287321a4883535252ba684d9ba"
+        }
+      }
+    },
+    "name": "autoscaling"
+  }
+}

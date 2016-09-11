@@ -1,0 +1,22 @@
+{
+  "name": "streams01",
+  "version": "0.0.0",
+  "description": "",
+  "main": "web.js",
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "JSONStream": "^0.9.0",
+    "event-stream": "^3.1.7",
+    "express": "~3.4.8",
+    "keypress": "~0.2.1",
+    "node-sphero": "git://github.com/davidmarkclements/node-sphero.git",
+    "request": "^2.34.0",
+    "vstream": "^0.1.0",
+    "websocket-stream": "^1.1.1",
+    "ws": "~0.4.31"
+  },
+  "devDependencies": {
+    "browserify": "~3.31.2"
+  }
+}
